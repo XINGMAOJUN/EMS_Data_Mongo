@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<!-- 配置文件 -->
+	<context:property-placeholder
+		location="classpath:config.properties" />
+	<!-- 使用spring注解 -->
+	<context:annotation-config />
+	<!-- spring扫描目录 -->
+	<context:component-scan
+		base-package="com.persagy">
+		<!-- 不包括@Controller -->
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 使用工厂创建datastore，同时完成index和caps的确认操作 -->
+	<bean id="datastore"
+		class="com.persagy.mongo.core.init.MongoDatabaseFactoryBean">
+		<!-- 设定服务器，默认为localhost:27017 -->
+		<property name="serverAddress" value="${mongoDB.server}" />
+		<!-- collection的名称 -->
+		<property name="dbname" value="${mongoDB.db}" />
+		<!-- 用户名和密码 -->
+		<property name="username" value="${mongoDB.username}" />
+		<property name="password" value="${mongoDB.password}" />
+		<!-- 是否进行索引确认操作，默认为flase -->
+		<property name="toEnsureIndexes" value="true" />
+		<!-- 指定要映射的包名 -->
+		<property name="mapPackage">
+			<value>com.persagy.mongo.test</value>
+		</property>
+	</bean>
+
+</beans> 
